@@ -7,12 +7,12 @@ import (
 )
 
 type Cmd struct {
-	helpFlag bool
+	helpFlag    bool
 	versionFlag bool
-	cpOption string
-	XjreOption string // path to JDK jre folder
-	class string
-	args []string
+	cpOption    string
+	XjreOption  string // path to JDK jre folder
+	class       string
+	args        []string
 }
 
 func printUsage() {

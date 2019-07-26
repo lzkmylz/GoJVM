@@ -4,11 +4,13 @@ import (
 	"os"
 	"strings"
 )
+
 const pathListSeparator = string(os.PathListSeparator) // a const value ":"
 type Entry interface {
 	readClass(className string) ([]byte, Entry, error)
 	String() string
 }
+
 func newEntry(path string) Entry {
 	if strings.Contains(path, pathListSeparator) {
 		return newCompositeEntry(path)
@@ -17,7 +19,7 @@ func newEntry(path string) Entry {
 		return newWildcardEntry(path)
 	}
 	if strings.HasSuffix(path, ".jar") || strings.HasSuffix(path, ".JAR") || strings.HasSuffix(path, ".zip") || strings.HasSuffix(path, ".ZIP") {
-			return newZipEntry(path)
+		return newZipEntry(path)
 	}
 	return newDirEntry(path)
 }

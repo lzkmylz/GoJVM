@@ -7,12 +7,12 @@ import (
 
 type Classpath struct {
 	bootClasspath Entry
-	extClasspath Entry
+	extClasspath  Entry
 	userClasspath Entry
 }
 
 //parse boot and ext clase path
-func Parse(jreOption, cpOption string) *Classpath  {
+func Parse(jreOption, cpOption string) *Classpath {
 	cp := &Classpath{}
 	cp.parseBootAndExtClasspath(jreOption)
 	return cp

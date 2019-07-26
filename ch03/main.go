@@ -16,7 +16,7 @@ func startJVM(cmd *Cmd) {
 	fmt.Printf("class data:%v\n", classData)
 }
 
-func main()  {
+func main() {
 	cmd := parseCmd()
 	if cmd.versionFlag {
 		fmt.Println("version 0.0.1")

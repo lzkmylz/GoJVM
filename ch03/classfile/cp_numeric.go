@@ -37,4 +37,3 @@ func (self *ConstantDoubleInfo) readInfo(reader *ClassReader) {
 	bytes := reader.readUint64()
 	self.val = math.Float64frombits(bytes)
 }
-
