@@ -22,12 +22,12 @@ func readAttribute(reader *ClassReader, cp ConstantPool) AttributeInfo {
 	return attrInfo
 }
 
-func newAttributeInfo(attrName string, attrLen uint32, cp ConstantPool) {
+func newAttributeInfo(attrName string, attrLen uint32, cp ConstantPool) AttributeInfo {
 	switch attrName {
 	case "Code":
 		return &CodeAttribute{cp: cp}
 	case "ConstantValue":
-		return &ConstantAttribute{}
+		return &ConstantValueAttribute{}
 	case "Deprecated":
 		return &DeprecatedAttribute{}
 	case "Exceptions":

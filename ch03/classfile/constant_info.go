@@ -2,7 +2,7 @@ package classfile
 
 const (
 	CONSTANT_CLASS              = 7
-	CONSTANT_Filedref           = 9
+	CONSTANT_Fieldref           = 9
 	CONSTANT_Methodref          = 10
 	CONSTANT_InterfaceMethodref = 11
 	CONSTANT_String             = 8
@@ -42,7 +42,7 @@ func newConstantInfo(tag uint8, cp ConstantPool) ConstantInfo {
 		return &ConstantUtf8Info{}
 	case CONSTANT_String:
 		return &ConstantStringInfo{cp: cp}
-	case CONSTANT_Class:
+	case CONSTANT_CLASS:
 		return &ConstantClassInfo{cp: cp}
 	case CONSTANT_Fieldref:
 		return &ConstantFieldrefInfo{ConstantMemberrefInfo{cp: cp}}
