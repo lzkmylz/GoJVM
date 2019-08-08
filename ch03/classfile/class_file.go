@@ -2,8 +2,28 @@ package classfile
 
 import "fmt"
 
+/*
+ClassFile {
+    u4             magic;
+    u2             minor_version;
+    u2             major_version;
+    u2             constant_pool_count;
+    cp_info        constant_pool[constant_pool_count-1];
+    u2             access_flags;
+    u2             this_class;
+    u2             super_class;
+    u2             interfaces_count;
+    u2             interfaces[interfaces_count];
+    u2             fields_count;
+    field_info     fields[fields_count];
+    u2             methods_count;
+    method_info    methods[methods_count];
+    u2             attributes_count;
+    attribute_info attributes[attributes_count];
+}
+*/
 type ClassFile struct {
-	magic        uint32
+	//magic      uint32
 	minorVersion uint16
 	majorVersion uint16
 	constantPool ConstantPool
@@ -16,7 +36,7 @@ type ClassFile struct {
 	attributes   []AttributeInfo
 }
 
-func Parse(ClassData []byte) (cf *ClassFile, err error) {
+func Parse(classData []byte) (cf *ClassFile, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			var ok bool
@@ -26,7 +46,8 @@ func Parse(ClassData []byte) (cf *ClassFile, err error) {
 			}
 		}
 	}()
-	cr := &ClassReader{ClassData}
+
+	cr := &ClassReader{classData}
 	cf = &ClassFile{}
 	cf.read(cr)
 	return
@@ -38,6 +59,7 @@ func (self *ClassFile) read(reader *ClassReader) {
 	self.constantPool = readConstantPool(reader)
 	self.accessFlags = reader.readUint16()
 	self.thisClass = reader.readUint16()
+	self.superClass = reader.readUint16()
 	self.interfaces = reader.readUint16s()
 	self.fields = readMembers(reader, self.constantPool)
 	self.methods = readMembers(reader, self.constantPool)
@@ -62,45 +84,41 @@ func (self *ClassFile) readAndCheckVersion(reader *ClassReader) {
 			return
 		}
 	}
-	panic("java.lang.UnsupportedClassVersion")
+
+	panic("java.lang.UnsupportedClassVersionError!")
 }
 
-func (self *ClassFile) MinorVersion() uint16 { // getter
+func (self *ClassFile) MinorVersion() uint16 {
 	return self.minorVersion
 }
-
-func (self *ClassFile) MajorVersion() uint16 { // getter
+func (self *ClassFile) MajorVersion() uint16 {
 	return self.majorVersion
 }
-
-func (self *ClassFile) ConstantPool() ConstantPool { // getter
+func (self *ClassFile) ConstantPool() ConstantPool {
 	return self.constantPool
 }
-
-func (self *ClassFile) AccessFlags() uint16 { // getter
+func (self *ClassFile) AccessFlags() uint16 {
 	return self.accessFlags
 }
-
-func (self *ClassFile) Fields() []*MemberInfo { // getter
+func (self *ClassFile) Fields() []*MemberInfo {
 	return self.fields
 }
-
-func (self *ClassFile) Methods() []*MemberInfo { // getter
+func (self *ClassFile) Methods() []*MemberInfo {
 	return self.methods
 }
 
-func (self *ClassFile) ClassName() string { // getter
+func (self *ClassFile) ClassName() string {
 	return self.constantPool.getClassName(self.thisClass)
 }
 
-func (self *ClassFile) SuperClassName() string { // getter
+func (self *ClassFile) SuperClassName() string {
 	if self.superClass > 0 {
 		return self.constantPool.getClassName(self.superClass)
 	}
-	return "" // 只有java.lang.Object没有super class
+	return ""
 }
 
-func (self *ClassFile) InterfaceNames() []string { // getter
+func (self *ClassFile) InterfaceNames() []string {
 	interfaceNames := make([]string, len(self.interfaces))
 	for i, cpIndex := range self.interfaces {
 		interfaceNames[i] = self.constantPool.getClassName(cpIndex)
